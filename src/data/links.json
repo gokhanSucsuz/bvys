@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "title": "Ana Uygulama",
+    "url": "https://example.com/app",
+    "description": "Ana iş süreçlerinin yönetildiği temel sistem.",
+    "color": "#6366f1"
+  },
+  {
+    "id": "2",
+    "title": "Analitik Paneli",
+    "url": "https://example.com/analytics",
+    "description": "Kullanıcı istatistikleri ve sistem metrikleri.",
+    "color": "#10b981"
+  }
+]
