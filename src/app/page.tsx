@@ -1,24 +1,54 @@
 import Link from 'next/link'
 import { getLinks } from './actions'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from './api/auth/[...nextauth]/options'
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const links = await getLinks()
+  const session = await getServerSession(authOptions)
+  const isAuthenticated = !!session
+  const isAdmin = session?.user?.email === 'gokhansucsuz@gmail.com'
+
+  // Sadece giriş yapmış kullanıcılar linkleri görebilir
+  const links = isAuthenticated ? await getLinks() : []
 
   return (
     <main className="container">
       <header className="header">
         <h1>BVS System Panel</h1>
-        <Link href="/settings" className="btn btn-primary">
-          ⚙️ Ayarlar
-        </Link>
+        <div>
+          {isAuthenticated ? (
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                {session.user?.email}
+              </span>
+              {isAdmin && (
+                <Link href="/settings" className="btn btn-primary">
+                  ⚙️ Ayarlar
+                </Link>
+              )}
+              <Link href="/api/auth/signout" className="btn">
+                Çıkış Yap
+              </Link>
+            </div>
+          ) : (
+             <Link href="/api/auth/signin" className="btn btn-primary">
+              Sisteme Giriş Yap
+            </Link>
+          )}
+        </div>
       </header>
 
-      {links.length === 0 ? (
+      {!isAuthenticated ? (
+        <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-secondary)' }}>
+          <h2>Panele Hoş Geldiniz</h2>
+          <p style={{ marginTop: '1rem' }}>Sistem linklerini görebilmek için giriş yapmalısınız.</p>
+        </div>
+      ) : links.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-secondary)' }}>
           <h2>Henüz eklenmiş bir sistem yok.</h2>
-          <p style={{ marginTop: '1rem' }}>Ayarlar sayfasından yeni sistem linkleri ekleyebilirsiniz.</p>
+          {isAdmin && <p style={{ marginTop: '1rem' }}>Ayarlar sayfasından yeni sistem linkleri ekleyebilirsiniz.</p>}
         </div>
       ) : (
         <div className="links-grid">

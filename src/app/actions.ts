@@ -3,6 +3,8 @@
 import fs from 'fs/promises'
 import path from 'path'
 import { revalidatePath } from 'next/cache'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from './api/auth/[...nextauth]/options'
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'links.json')
 
@@ -24,7 +26,15 @@ export async function getLinks(): Promise<SystemLink[]> {
   }
 }
 
+async function verifyAdmin() {
+  const session = await getServerSession(authOptions)
+  if (!session || session.user?.email !== 'gokhansucsuz@gmail.com') {
+    throw new Error('Unauthorized')
+  }
+}
+
 export async function addLink(formData: FormData) {
+  await verifyAdmin()
   const links = await getLinks()
   const newLink: SystemLink = {
     id: crypto.randomUUID(),
@@ -40,6 +50,7 @@ export async function addLink(formData: FormData) {
 }
 
 export async function deleteLink(id: string) {
+  await verifyAdmin()
   const links = await getLinks()
   const updatedLinks = links.filter((link) => link.id !== id)
   await fs.writeFile(dataFilePath, JSON.stringify(updatedLinks, null, 2))

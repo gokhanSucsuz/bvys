@@ -1,18 +1,33 @@
 import Link from 'next/link'
 import { getLinks, addLink, deleteLink } from '../actions'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../api/auth/[...nextauth]/options'
+import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 
 export default async function Settings() {
+  const session = await getServerSession(authOptions)
+
+  // Süper admin kontrolü
+  if (!session || session.user?.email !== 'gokhansucsuz@gmail.com') {
+    redirect('/api/auth/signin')
+  }
+
   const links = await getLinks()
 
   return (
     <main className="container">
       <header className="header">
         <h1>Sistem Ayarları</h1>
-        <Link href="/" className="btn">
-          ← Panele Dön
-        </Link>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+            Admin: {session.user.email}
+          </span>
+          <Link href="/" className="btn">
+            ← Panele Dön
+          </Link>
+        </div>
       </header>
 
       <div className="settings-panel">
