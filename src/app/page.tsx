@@ -16,7 +16,7 @@ export default async function Home() {
   return (
     <main className="container">
       <header className="header">
-        <h1>BVS System Panel</h1>
+        <h1>BVYS - Bütünleşik Vakıf Yönetim Sistemi</h1>
         <div>
           {isAuthenticated ? (
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>

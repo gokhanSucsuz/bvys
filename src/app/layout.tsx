@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'BVS System Panel',
-  description: 'Merkezi Sistem Yönetim Paneli',
+  title: 'BVYS - Bütünleşik Vakıf Yönetim Sistemi',
+  description: 'Bütünleşik Vakıf Yönetim Sistemi Merkezi Paneli',
 }
 
 export default function RootLayout({
